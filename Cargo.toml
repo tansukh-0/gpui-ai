@@ -20,16 +20,16 @@ gpui-ai = { path = "crates/gpui-ai" }
 # of Zed's crate, and the layers move together by semver. The package renames
 # keep every `use gpui::`, `use gpui_component::`, and `gpui_component_assets::`
 # path in this workspace pointing at the same names it always did.
-gpui = { package = "gpui-pre", version = "0.3.3" }
-gpui_platform = { package = "gpui-pre-platform", version = "0.3.3", features = [
+gpui = { package = "gpui-pre", version = "0.3.12" }
+gpui_platform = { package = "gpui-pre-platform", version = "0.3.12", features = [
     "font-kit",
     "x11",
     "wayland",
     "runtime_shaders",
 ] }
-gpui-component = "0.6.0"
-gpui-component-assets = { package = "gpui-kit-assets", version = "0.6.0" }
-gpui-base = "0.6.0"
+gpui-component = "0.10.0"
+gpui-component-assets = { package = "gpui-kit-assets", version = "0.10.0" }
+gpui-base = "0.10.0"
 
 anyhow = "1"
 console_error_panic_hook = "0.1"

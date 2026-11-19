@@ -1166,7 +1166,7 @@ impl Render for Chat {
                             |_, _, _| (),
                             move |_, _, window, _| {
                                 window.on_mouse_event(
-                                    move |event: &gpui::ScrollWheelEvent, phase, _, cx| {
+                                    move |event: &gpui::ScrollEvent, phase, _, cx| {
                                         if phase == gpui::DispatchPhase::Capture
                                             && list.viewport_bounds().contains(&event.position)
                                         {

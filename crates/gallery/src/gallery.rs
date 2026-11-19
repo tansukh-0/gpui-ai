@@ -4589,7 +4589,7 @@ impl Gallery {
     /// [`WheelAccelerator`], applied on top of the base scroll the `List`
     /// element already performed. Trackpad `Pixels` deltas pass through
     /// untouched.
-    fn handle_catalog_wheel(&mut self, event: &ScrollWheelEvent, cx: &mut Context<Self>) {
+    fn handle_catalog_wheel(&mut self, event: &ScrollEvent, cx: &mut Context<Self>) {
         if self.selected != StoryId::All {
             return;
         }
@@ -6517,7 +6517,7 @@ impl Render for Gallery {
                 .on_mouse_move(cx.listener(|this, event: &MouseMoveEvent, _, cx| {
                     this.track_autoscroll_pointer(event.position, cx);
                 }))
-                .on_scroll_wheel(cx.listener(|this, event: &ScrollWheelEvent, _, cx| {
+                .on_scroll(cx.listener(|this, event: &ScrollEvent, _, cx| {
                     this.handle_catalog_wheel(event, cx);
                 }))
                 .on_action(cx.listener(|this, _: &ScrollHome, _, cx| {

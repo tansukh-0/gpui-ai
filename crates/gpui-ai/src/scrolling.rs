@@ -37,7 +37,7 @@
 //! ```
 
 use gpui::{
-    HitboxBehavior, IntoElement as _, ListState, Pixels, ScrollWheelEvent, Styled as _, canvas, px,
+    HitboxBehavior, IntoElement as _, ListState, Pixels, ScrollEvent, Styled as _, canvas, px,
 };
 
 /// When a scrollable surface shows its scrollbar.
@@ -288,7 +288,7 @@ pub(crate) fn list_scroll_mask(state: &ListState) -> impl gpui::IntoElement {
             let line_height = window.line_height();
             let view_id = window.current_view();
             let hitbox_id = hitbox.id;
-            window.on_mouse_event(move |event: &ScrollWheelEvent, phase, window, cx| {
+            window.on_mouse_event(move |event: &ScrollEvent, phase, window, cx| {
                 if !(phase.capture() && hitbox_id.should_handle_scroll(window)) {
                     return;
                 }
