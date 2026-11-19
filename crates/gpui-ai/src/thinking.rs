@@ -149,6 +149,7 @@ pub struct Thinking {
     trace: ThinkingTrace,
     revision: u64,
     on_event: Option<Handler<ThinkingEvent>>,
+    title: Option<SharedString>
 }
 
 impl Thinking {
@@ -165,6 +166,7 @@ impl Thinking {
             trace: trace.content().clone(),
             revision: trace.revision(),
             on_event: None,
+            title: None
         }
     }
 
@@ -173,6 +175,12 @@ impl Thinking {
         self.open = Some(open);
         self
     }
+
+    /// sets the custom title 
+    pub fn title(mut self, title: impl Into<SharedString>) -> Self {
+       self.title = Some(title.into());
+       self
+   }
 
     /// Handles typed trace interactions.
     pub fn on_event(
@@ -302,12 +310,13 @@ impl RenderOnce for Thinking {
         let tokens = cx.theme().semantic_tokens();
         let live = self.state == ProgressState::Running;
         let open = self.is_open();
-        let title: SharedString = match (&self.state, self.trace.thought_for) {
+        let derived: SharedString = match (&self.state, self.trace.thought_for) {
             (ProgressState::Running, _) => "Thinking…".into(),
             (ProgressState::Failed(_), _) => "Thinking stopped".into(),
             (_, Some(duration)) => format!("Thought for {:.0}s", duration.as_secs_f64()).into(),
             _ => "Thoughts".into(),
         };
+        let title = self.title.unwrap_or(derived);
         let event = ThinkingEvent::Toggled {
             id: self.id.clone(),
             open: !open,
