@@ -70,3 +70,6 @@ gpui = { workspace = true, features = ["test-support"] }
 
 [build-dependencies]
 serde_json = "1"
+
+[lints]
+workspace = true
