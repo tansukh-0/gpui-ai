@@ -6,8 +6,8 @@
 
 use gpui::{
     AppContext as _, Context, Entity, InteractiveElement as _, Modifiers, ParentElement as _,
-    Render, ScrollDelta, ScrollWheelEvent, Styled as _, Subscription, TestAppContext,
-    VisualTestContext, Window, div, point, px,
+    Render, ScrollDelta, ScrollEvent, Styled as _, Subscription, TestAppContext, VisualTestContext,
+    Window, div, point, px,
 };
 use gpui_ai::prelude::{FineTuneCard, FineTuneEvent, FineTuneTypeface, FineTuneValues};
 use std::{cell::RefCell, rc::Rc};
@@ -303,7 +303,7 @@ fn public_fine_tune_keeps_apply_reachable_in_a_constrained_viewport(cx: &mut Tes
     assert!(initial_apply.bottom() > host.bottom());
 
     for _ in 0..8 {
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: host.center(),
             delta: ScrollDelta::Pixels(point(px(0.), px(-120.))),
             ..Default::default()

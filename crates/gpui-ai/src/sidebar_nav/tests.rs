@@ -7,7 +7,7 @@ use super::rows::{VisibleRow, collect_parent_ids, snapshot_ids_are_unique, visib
 use super::*;
 use gpui::{
     Bounds, Element as _, ListAlignment, ListOffset, ListState, RenderOnce as _, ScrollDelta,
-    ScrollWheelEvent, TestAppContext, VisualTestContext, accesskit, canvas, list, px, size,
+    ScrollEvent, TestAppContext, VisualTestContext, accesskit, canvas, list, px, size,
 };
 use gpui_component::theme::Theme;
 use std::sync::{Arc, Mutex};
@@ -720,7 +720,7 @@ fn wheel_over_scrollable_sidebar_moves_sidebar_before_catalog(cx: &mut TestAppCo
     });
     assert!(nav_list.max_offset_for_scrollbar().y > px(0.));
 
-    cx.simulate_event(ScrollWheelEvent {
+    cx.simulate_event(ScrollEvent {
         position: nav_bounds.center(),
         delta: ScrollDelta::Pixels(gpui::point(px(0.), px(-40.))),
         ..Default::default()
@@ -748,7 +748,7 @@ fn wheel_over_scrollable_sidebar_moves_sidebar_before_catalog(cx: &mut TestAppCo
         }
         bottom = settled;
     }
-    cx.simulate_event(ScrollWheelEvent {
+    cx.simulate_event(ScrollEvent {
         position: nav_bounds.center(),
         delta: ScrollDelta::Pixels(gpui::point(px(0.), px(-40.))),
         ..Default::default()

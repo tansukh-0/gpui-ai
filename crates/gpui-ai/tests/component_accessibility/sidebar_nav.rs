@@ -8,8 +8,8 @@
 
 use gpui::{
     AppContext as _, Context, Entity, InteractiveElement as _, Modifiers, ParentElement as _,
-    Render, ScrollDelta, ScrollWheelEvent, Styled as _, Subscription, TestAppContext,
-    VisualTestContext, Window, div, point, px,
+    Render, ScrollDelta, ScrollEvent, Styled as _, Subscription, TestAppContext, VisualTestContext,
+    Window, div, point, px,
 };
 use gpui_ai::prelude::{SidebarNav, SidebarNavEvent, SidebarNavItem, SidebarSection};
 use gpui_component::IconName;
@@ -626,7 +626,7 @@ fn public_sidebar_nav_scrolls_the_final_stable_item_into_the_constrained_viewpor
     // reachable end of a forty-section list is discovered as the reader
     // scrolls toward it rather than known from the first frame.
     for _ in 0..36 {
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: host.center(),
             delta: ScrollDelta::Pixels(point(px(0.), px(-180.))),
             ..Default::default()

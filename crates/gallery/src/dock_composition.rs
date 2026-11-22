@@ -511,7 +511,7 @@ fn dock_artifact() -> Artifact {
 mod tests {
     use super::{DockCompositionStory, DockPlacement, SidebarNavPresentation};
     use gpui::{
-        Bounds, Entity, Modifiers, Pixels, ScrollDelta, ScrollWheelEvent, TestAppContext,
+        Bounds, Entity, Modifiers, Pixels, ScrollDelta, ScrollEvent, TestAppContext,
         VisualTestContext, px, size,
     };
     use gpui_component::ActiveTheme as _;
@@ -696,7 +696,7 @@ mod tests {
         let nav_row = bounds(cx, "sidebar-nav-item-inventory");
         let thread_row = bounds(cx, "thread-supplier-pricing");
 
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: nav_row.center(),
             delta: ScrollDelta::Pixels(gpui::point(px(0.), px(-40.))),
             ..Default::default()
@@ -714,7 +714,7 @@ mod tests {
             "the conversation list should not move when the navigation scrolls",
         );
 
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: thread_row.center(),
             delta: ScrollDelta::Pixels(gpui::point(px(0.), px(-40.))),
             ..Default::default()

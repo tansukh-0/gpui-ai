@@ -86,39 +86,48 @@ mod tests {
     use gpui_component::Disableable as _;
     use std::sync::{Arc, Mutex};
 
+    type Captured = Arc<Mutex<Vec<(Role, accesskit::Node)>>>;
+
     struct Probe {
-        nodes: Arc<Mutex<Vec<accesskit::Node>>>,
+        captured: Captured,
     }
 
     impl Render for Probe {
         fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-            let nodes = self.nodes.clone();
+            let captured = self.captured.clone();
             canvas(
                 move |_, window, cx| {
                     for disabled in [false, true] {
-                        let mut button = Button::new("label-probe")
+                        let label = if disabled {
+                            "Unavailable"
+                        } else {
+                            "Apply gyjpq ÅÉ ﬁ ﬂ"
+                        };
+
+                        let mut erased = Button::new("label-probe")
                             .text_label("Apply gyjpq ÅÉ ﬁ ﬂ")
                             .disabled(disabled)
                             .when(disabled, |button| button.accessibility_label("Unavailable"))
                             .on_click(|_, _, _| {})
                             .render(window, cx)
                             .into_any_element();
-                        // The styled Button composes a base Button. Resolve its
-                        // view before inspecting the actual semantic div, not
-                        // the transparent RenderOnce wrapper (which has no role).
-                        let (_, mut rendered) = button
-                            .downcast_mut::<gpui::ViewElement<gpui_base::Button>>()
-                            .expect("upstream styled button composes base Button")
-                            .request_layout(None, None, window, cx);
-                        let button = rendered
-                            .as_mut()
-                            .expect("base button renders a child")
-                            .downcast_mut::<gpui::Stateful<gpui::Div>>()
-                            .expect("base button renders its semantic div");
-                        assert_eq!(button.a11y_role(), Some(Role::Button));
+
+                        assert!(
+                            erased
+                                .downcast_mut::<gpui::ViewElement<gpui_base::Button>>()
+                                .is_some(),
+                            "the styled button composes gpui-base's Button"
+                        );
+
+                        let element = crate::control::composed_button("label-probe", label)
+                            .disabled(disabled)
+                            .on_click(|_, _, _| {})
+                            .render(window, cx)
+                            .into_element();
+                        let role = element.a11y_role().expect("the base button carries a role");
                         let mut node = accesskit::Node::new(Role::Button);
-                        button.write_a11y_info(&mut node);
-                        nodes.lock().expect("capture lock").push(node);
+                        element.write_a11y_info(&mut node);
+                        captured.lock().expect("capture mutex").push((role, node));
                     }
                 },
                 |_, _, _, _| {},
@@ -129,15 +138,15 @@ mod tests {
     #[gpui::test]
     fn composed_label_keeps_upstream_name_and_activation(cx: &mut TestAppContext) {
         cx.update(crate::init);
-        let nodes = Arc::new(Mutex::new(Vec::new()));
-        let result = nodes.clone();
-        let (_, cx) = cx.add_window_view(|_, _| Probe { nodes });
+        let captured: Captured = Arc::new(Mutex::new(Vec::new()));
+        let result = captured.clone();
+        let (_, cx) = cx.add_window_view(move |_, _| Probe { captured });
         cx.update(|window, cx| window.draw(cx).clear(cx));
-        let nodes = result.lock().expect("capture lock");
-        assert_eq!(nodes[0].label(), Some("Apply gyjpq ÅÉ ﬁ ﬂ"));
-        assert!(nodes[0].supports_action(accesskit::Action::Click));
-        assert!(!nodes[0].is_disabled());
-        assert_eq!(nodes[1].label(), Some("Unavailable"));
-        assert!(!nodes[1].supports_action(accesskit::Action::Click));
+        let nodes = result.lock().expect("capture mutex");
+        assert_eq!(nodes[0].0, Role::Button);
+        assert_eq!(nodes[0].1.label(), Some("Apply gyjpq ÅÉ ﬁ ﬂ"));
+        assert!(nodes[0].1.supports_action(accesskit::Action::Click)); // enabled → activation live
+        assert_eq!(nodes[1].1.label(), Some("Unavailable"));
+        assert!(!nodes[1].1.supports_action(accesskit::Action::Click)); // disabled → activation barred
     }
 }

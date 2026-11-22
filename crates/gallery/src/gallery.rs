@@ -6727,7 +6727,7 @@ mod tests {
     use crate::StoryId;
     use gpui::{
         AppContext as _, Context, Element as _, Entity, IntoElement as _, Modifiers, MouseButton,
-        Render, Role, ScrollDelta, ScrollWheelEvent, TestAppContext, VisualTestContext, Window,
+        Render, Role, ScrollDelta, ScrollEvent, TestAppContext, VisualTestContext, Window,
         accesskit, point, px, size,
     };
     use gpui_ai::{
@@ -6770,7 +6770,7 @@ mod tests {
     }
 
     fn scroll(cx: &mut VisualTestContext, dy: f32) {
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: point(px(100.), px(200.)),
             delta: ScrollDelta::Pixels(point(px(0.), px(dy))),
             ..Default::default()
@@ -7109,7 +7109,7 @@ mod tests {
         // Notches must land over the feed; negative dy scrolls down.
         // One simulated event proves the render-tree wiring end to end
         // (List applies its base scroll, our bubble-phase handler sees it).
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: point(px(100.), px(200.)),
             delta: ScrollDelta::Lines(point(0., -1.)),
             ..Default::default()
@@ -7122,7 +7122,7 @@ mod tests {
 
         // Drive the remaining notches directly so the acceleration math is
         // exercised deterministically, independent of hit-test plumbing.
-        let notch = ScrollWheelEvent {
+        let notch = ScrollEvent {
             position: point(px(100.), px(200.)),
             delta: ScrollDelta::Lines(point(0., -1.)),
             ..Default::default()
@@ -7142,7 +7142,7 @@ mod tests {
 
         // A direction reversal resets cadence: the opposite notch moves back
         // up by roughly one base step without panic.
-        let reverse = ScrollWheelEvent {
+        let reverse = ScrollEvent {
             position: point(px(100.), px(200.)),
             delta: ScrollDelta::Lines(point(0., 1.)),
             ..Default::default()

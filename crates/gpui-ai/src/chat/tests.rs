@@ -89,7 +89,8 @@ fn set_messages(
 }
 
 fn activate_key(cx: &mut VisualTestContext, key: &str) {
-    let keystroke = Keystroke::parse(key).expect("test key should parse");
+    let os = cx.read(|app| app.platform_info().os);
+    let keystroke = Keystroke::parse_with_os(key, os).expect("test key should parse");
     cx.simulate_event(KeyDownEvent {
         keystroke: keystroke.clone(),
         is_held: false,
@@ -295,11 +296,12 @@ fn a_reader_can_scroll_back_while_an_answer_is_still_streaming(cx: &mut TestAppC
     };
     let center = chat.read_with(cx, |chat, _| chat.list_state.viewport_bounds().center());
     let turn_wheel = |cx: &mut VisualTestContext| {
-        cx.simulate_event(gpui::ScrollWheelEvent {
+        cx.simulate_event(gpui::ScrollEvent {
             position: center,
             delta: gpui::ScrollDelta::Pixels(gpui::point(px(0.), px(120.))),
             modifiers: Modifiers::default(),
             touch_phase: gpui::TouchPhase::Moved,
+            source: gpui::ScrollSource::Pointer,
         });
         cx.update(|window, cx| window.draw(cx).clear(cx));
     };
@@ -356,11 +358,12 @@ fn a_medium_jump_keeps_its_full_distance_and_reader_input_cancels_it(cx: &mut Te
     });
     cx.update(|window, cx| window.draw(cx).clear(cx));
     let center = chat.read_with(cx, |chat, _| chat.list_state.viewport_bounds().center());
-    cx.simulate_event(gpui::ScrollWheelEvent {
+    cx.simulate_event(gpui::ScrollEvent {
         position: center,
         delta: gpui::ScrollDelta::Pixels(gpui::point(px(0.), px(0.5))),
         modifiers: Modifiers::default(),
         touch_phase: gpui::TouchPhase::Moved,
+        source: gpui::ScrollSource::Pointer,
     });
     assert!(
         chat.read_with(cx, |chat, _| chat.jump_drive.is_none()),

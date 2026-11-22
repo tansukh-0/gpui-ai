@@ -19,11 +19,10 @@ mod tests {
 
     #[test]
     fn text_token_applies_the_complete_typography_role() {
-        let token = TextStyleToken {
-            size: px(15.),
-            line_height: px(22.),
-            weight: FontWeight::SEMIBOLD,
-        };
+        let mut token = TextStyleToken::default();
+        token.size = px(15.);
+        token.line_height = px(22.);
+        token.weight = FontWeight::SEMIBOLD;
         let style = StyleRefinement::default().text_token(token);
         assert_eq!(style.text.font_size, Some(token.size.into()));
         assert_eq!(style.text.line_height, Some(token.line_height.into()));

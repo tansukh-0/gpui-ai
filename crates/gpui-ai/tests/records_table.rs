@@ -223,7 +223,8 @@ impl Render for RecordsEventHarness {
 }
 
 fn activate_key(cx: &mut VisualTestContext, key: &str) {
-    let keystroke = Keystroke::parse(key).expect("test key should parse");
+    let os = cx.read(|app| app.platform_info().os);
+    let keystroke = Keystroke::parse_with_os(key, os).expect("test key should parse");
     cx.simulate_event(KeyDownEvent {
         keystroke: keystroke.clone(),
         is_held: false,

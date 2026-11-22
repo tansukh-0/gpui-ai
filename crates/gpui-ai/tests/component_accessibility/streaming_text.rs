@@ -7,7 +7,7 @@
 
 use gpui::{
     Context, InteractiveElement as _, Modifiers, ParentElement as _, Render, ScrollDelta,
-    ScrollWheelEvent, Styled as _, TestAppContext, VisualTestContext, Window, div, point, px,
+    ScrollEvent, Styled as _, TestAppContext, VisualTestContext, Window, div, point, px,
 };
 use gpui_ai::{
     stream::Progressive,
@@ -210,7 +210,7 @@ fn streaming_citation_companions_keep_the_final_link_reachable_in_a_narrow_root(
     cx.simulate_mouse_move(scroller.center(), None, Modifiers::default());
 
     for _ in 0..12 {
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: scroller.center(),
             delta: ScrollDelta::Pixels(point(px(0.), px(-120.))),
             ..Default::default()

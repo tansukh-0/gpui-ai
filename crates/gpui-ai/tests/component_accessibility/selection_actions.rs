@@ -8,8 +8,8 @@
 
 use gpui::{
     AppContext as _, ClipboardItem, Context, Entity, InteractiveElement as _, Modifiers,
-    MouseButton, ParentElement as _, Render, ScrollDelta, ScrollWheelEvent, Styled as _,
-    Subscription, TestAppContext, VisualTestContext, Window, div, point, px,
+    MouseButton, ParentElement as _, Render, ScrollDelta, ScrollEvent, Styled as _, Subscription,
+    TestAppContext, VisualTestContext, Window, div, point, px,
 };
 use gpui_ai::selection_actions::{SelectionAction, SelectionActions, SelectionActionsEvent};
 use std::{cell::RefCell, rc::Rc};
@@ -410,7 +410,7 @@ fn public_selection_actions_keep_long_final_action_reachable_in_a_narrow_root(
     );
 
     for _ in 0..12 {
-        cx.simulate_event(ScrollWheelEvent {
+        cx.simulate_event(ScrollEvent {
             position: toolbar.center(),
             delta: ScrollDelta::Pixels(point(px(-120.), px(0.))),
             ..Default::default()
